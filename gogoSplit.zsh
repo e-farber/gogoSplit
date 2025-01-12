@@ -36,21 +36,10 @@ echo "Directory:" "$output"
 mkdir "$output"
 mv "$file" "$output"
 cd "$output"
-ffmpeg -hide_banner -loglevel error \
+ffmpeg -hide_banner -loglevel error  \
     -i "$file" -f segment -segment_time $segmentDuration \
-    -c copy "$output"%"$format".mp3
+    -segment_start_number 1 -c copy "$output"%"$format".mp3
 mv "$file" ..
-
-# Shift file indexes up by one, so they are one-indexed.
-mkdir tmp
-digitIndex=${#output}
-for file in "$output"*; do
-    num=${file:$digitIndex:${#amount}}
-    newNum=$( printf %"$format" $((num + 1)) )
-    mv ${file} tmp/"$output"$newNum".mp3"
-done
-mv tmp/* .
-rm -r tmp
 
 echo -e "\nSuccessful."
 exit 0
